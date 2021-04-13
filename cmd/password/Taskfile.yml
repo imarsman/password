@@ -7,8 +7,8 @@ version: 3
 
 # This build file is tailored for a Golang project with a
 # project_root/cmd/appname/Taskfile.yml and
-# project_root/build/appname and
-# project_root/build/builds/appname layout.
+# project_root/bin/build/appname and
+# project_root/bin/build/builds/appname layout.
 # More can be done to do things like put builds in a bin directory and add a
 # sibling config and log directory and other resources and to package that up in
 # a build. One could also use this to build a binary then build a Docker file to
@@ -22,11 +22,11 @@ vars:
   ROOT_DIR:
     sh: echo $(cd ../../ && pwd)
   BUILD_DIR:
-    sh: echo $(cd {{.APP_BUILDS_DIR}}/build/ && pwd)
+    sh: echo $(cd {{.ROOT_DIR}}/build/ && pwd)
   # Get app builds dir
-  # Assuming {{.ROOT_DIR}}/build/builds/{{.APP_NAME}}
+  # Assuming {{.ROOT_DIR}}/bin/build/builds/{{.APP_NAME}}
   APP_BUILDS_DIR:
-    sh: echo $(cd {{.BUILD_DIR}}/builds/ && pwd)
+    sh: echo $(cd {{.BUILD_DIR}}/{{.APP_NAME}} && pwd)
   # NAMESPACE is specific to Golang projects with modules.
   NAMESPACE: 
     sh: cat {{.ROOT_DIR}}/go.mod |head -1|cut -d ' ' -f2
@@ -101,12 +101,10 @@ tasks:
         vars: {OS: darwin, ARCHITECTURE: arm64, OS_NAME: mac}
 
   package:
-    desc: tar gzip and zip the builds and move them to the builds dir
-    dir: "{{.BUILD_DIR}}"
+    desc: tar the builds
     cmds:
-      - tar -zcf {{.APP_NAME}}-{{.BUILD_DATE}}.tar.gz ./{{.APP_NAME}}
-      - mv {{.BUILD_DIR}}/{{.APP_NAME}}-{{.BUILD_DATE}}.tar.gz {{.APP_BUILDS_DIR}}/
-      - zip {{.APP_NAME}}-{{.BUILD_DATE}}.zip -r ./{{.APP_NAME}}
+      - tar -zcf {{.APP_BUILDS_DIR}}/{{.APP_NAME}}-{{.BUILD_DATE}}.tar.gz -C {{.BUILD_DIR}} ./{{.APP_NAME}}
+      - cd {{.BUILD_DIR}} && zip {{.APP_NAME}}-{{.BUILD_DATE}}.zip -r ./{{.APP_NAME}}
       - mv {{.BUILD_DIR}}/{{.APP_NAME}}-{{.BUILD_DATE}}.zip {{.APP_BUILDS_DIR}}/
 
   info:
