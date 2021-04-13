@@ -10,6 +10,9 @@ assumed.
 
 Using the -h flag will give usage information.
 
+It is likely that there will be changes due to testing but the overall
+functionality of the application should remain the same.
+
 ## Password Oriented libraries used
 
 -  go-password:

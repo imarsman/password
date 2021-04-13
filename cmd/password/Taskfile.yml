@@ -7,7 +7,7 @@ version: 3
 
 # This build file is tailored for a Golang project with a
 # project_root/cmd/appname/Taskfile.yml and
-# project_root/bin/build/appname and
+# project_root/build/appname and
 # project_root/bin/build/builds/appname layout.
 # More can be done to do things like put builds in a bin directory and add a
 # sibling config and log directory and other resources and to package that up in
